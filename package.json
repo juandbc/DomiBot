@@ -1,0 +1,31 @@
+{
+  "name": "domibot",
+  "version": "1.0.0",
+  "description": "Bot para realizar pedidos a domicilios de comida",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanB3r/DomiBot.git"
+  },
+  "keywords": [
+    "bot",
+    "nodejs",
+    "restify",
+    "botbuilder",
+    "dotenv"
+  ],
+  "author": "Juan David Bermudez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuanB3r/DomiBot/issues"
+  },
+  "homepage": "https://github.com/JuanB3r/DomiBot#readme",
+  "dependencies": {
+    "botbuilder": "^3.11.0",
+    "dotenv": "^4.0.0",
+    "restify": "^6.3.2"
+  }
+}
