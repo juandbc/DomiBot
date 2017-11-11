@@ -4,11 +4,11 @@ module.exports = [
     function (session) {
         // heroCards de las bebidas
         let cocaColaHeroCard = new builder.HeroCard(session)
-        .title("Pepsi")
+        .title("Coca Cola")
         .subtitle("Iniciando desde 2000")
         .text("El auténtico sabor de la bebida Coca Cola®, deliciosa con tus comidas")
         .images([
-            builder.CardImage.create(session, "https://domiciliosbot.herokuapp.com/cocacola.jpg")
+            builder.CardImage.create(session, "http://localhost/img/cocacola.jpg")
         ])
         .buttons([
             builder.CardAction.postBack(session, "pepsi", "Ordenar")
@@ -19,7 +19,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("El auténtico sabor de la bebida Pepsi®, una refrescante manera de compartir los mejores momentos")
             .images([
-                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/F_PEPSI.jpg")
+                builder.CardImage.create(session, "http://localhost/img/pepsi.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "pepsi", "Ordenar")
@@ -30,7 +30,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("Colombiana")
             .images([
-                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/F_COLOM.jpg")
+                builder.CardImage.create(session, "http://localhost/img/colombiana.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "colombiana", "Ordenar")
@@ -41,18 +41,18 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("7UP")
             .images([
-                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/F_SEVENUP.jpg")
+                builder.CardImage.create(session, "http://localhost/img/sevenup.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "7up", "Ordenar")
             ]);
 
         let manzanaHeroCard = new builder.HeroCard(session)
-            .title("Manzana")
+            .title("Postobon")
             .subtitle("Iniciando desde 2000")
-            .text("Manzana")
+            .text("Postobon Manzana")
             .images([
-                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/F_MANZANAP.jpg")
+                builder.CardImage.create(session, "http://localhost/img/postobon.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "manzana", "Ordenar")
@@ -63,7 +63,7 @@ module.exports = [
             .subtitle("Iniciando desde 5.500")
             .text("H2OH.")
             .images([
-                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/F_H2OH.jpg")
+                builder.CardImage.create(session, "http://localhost/img/h2oh.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "h2oh", "Ordenar")
@@ -77,6 +77,6 @@ module.exports = [
     },
     function (session, results) {
         console.log("RESPUESTA DEL USUARIO = " + results.response);
-        session.endDialog(results.response);
+        session.endDialogWithResult(results);
     }
 ];

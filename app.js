@@ -1,20 +1,19 @@
 var restify = require("restify");
 var builder = require("botbuilder");
 var dotenv = require("dotenv");
+const http = require("./http");
+
+// Ejecuta servidor http para las imagenes
+http.run();
 
 // Obtener variables de configuracion
 dotenv.config();
 
-// Crear servidor http
+// Crear servidor http restify
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT, function () {
     console.log("%s listening at %s", server.name, server.url);
 });
-
-// Servir caperta de imágenes
-/*server.get(/\/img\/?./, restify.plugins.serveStatic({
-    directory: "./img/"
-  }));*/
 
 // Conector del bot framework service
 var botConnector = new builder.ChatConnector({
@@ -23,12 +22,19 @@ var botConnector = new builder.ChatConnector({
 });
 
 // Creacion del bot
-var bot = new builder.UniversalBot(botConnector);
+var bot = new builder.UniversalBot(botConnector, {
+    localizerSettings: {
+        defaultLocale: "es"
+    }
+});
 server.post("/api/messages", botConnector.listen());
 
 // Dialogs
 bot.dialog("/", [
     function (session) {
+        session.preferredLocale("es", (err) => {
+            console.log("error en el locale");
+        });
         let time = new Date().getHours();
         let text;
         if (time >= 6 && time <= 11) {
@@ -75,6 +81,7 @@ bot.dialog("/", [
     }
 ]).endConversationAction("end", "Está bien, espero que volvamos hablar pronto.", {
     matches: /\b(adiós|cancelar|adios|chao)\b|\b(muchas gracias|gracias)\b/ig,
+    //TODO : mostrar las opciones como confirm 
     confirmPrompt: "¿Estás seguro que deseas cancelar el pedido?"
 });
 
