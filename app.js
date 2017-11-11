@@ -11,10 +11,15 @@ server.listen(process.env.port || process.env.PORT, function () {
     console.log("%s listening at %s", server.name, server.url);
 });
 
+// Caperta de imágenes
+server.get(/\/img\/?.*/, restify.plugins.serveStatic({
+    directory: "./img/"
+  }));
+
 // Conector del bot framework service
 var botConnector = new builder.ChatConnector({
-    appId: "",
-    appPassword: ""
+    appId: process.env.APP_ID,
+    appPassword: process.env.APP_PASSWORD
 });
 
 // Creacion del bot

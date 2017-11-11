@@ -3,8 +3,9 @@ var builder = require("botbuilder");
 module.exports = [
     function (session) {
         // heroCard de las pizzas
+        // TODO : enviar como respuesta codigo de la pizza
         let pizzaColombianaHeroCard = new builder.HeroCard(session)
-            .title("Colombiana")
+            .title("Nativa")
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, jamón, champiñón, aceituna, chorizo, carne molida y extraqueso.")
             .images([
@@ -14,8 +15,8 @@ module.exports = [
                 builder.CardAction.postBack(session, "p_colom", "Ordenar")
             ]);
 
-        let pizzaFiestaPepperoniHeroCard = new builder.HeroCard(session)
-            .title("Fiesta pepperoni")
+        let pizzaPepperoniHeroCard = new builder.HeroCard(session)
+            .title("Pepperoni")
             .subtitle("Iniciando desde 24.900")
             .text("Doble pepperoni y extraqueso.")
             .images([
@@ -36,8 +37,8 @@ module.exports = [
                 builder.CardAction.postBack(session, "p_hawaiana", "Ordenar")
             ]);
 
-        let pizzaHonoluluHeroCard = new builder.HeroCard(session)
-            .title("Honolulu")
+        let pizzaJamonHeroCard = new builder.HeroCard(session)
+            .title("Jamon")
             .subtitle("Iniciando desde 24.900")
             .text("Jalapeño, jamón, tocineta y piña.")
             .images([
@@ -58,8 +59,8 @@ module.exports = [
                 builder.CardAction.postBack(session, "p_vegetariana", "Ordenar")
             ]);
 
-        let pizzaExtraVaganzzaHeroCard = new builder.HeroCard(session)
-            .title("Extravaganzza")
+        let pizzaCuatroCarnesHeroCard = new builder.HeroCard(session)
+            .title("Cuatro carnes")
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, jamón, champiñón, aceituna, chorizo, carne molida y extraqueso.")
             .images([
@@ -69,8 +70,8 @@ module.exports = [
                 builder.CardAction.postBack(session, "p_extravaganzza", "Ordenar")
             ]);
 
-        let pizzaHawaiianChickHeroCard = new builder.HeroCard(session)
-            .title("Hawaiian Chick")
+        let pizzaHawaianaChickenkHeroCard = new builder.HeroCard(session)
+            .title("Hawaiana con pollo")
             .subtitle("Iniciando desde 27.900")
             .text("Queso Mozarella, trocitos de pollo, piña, tocineta y salsa B.B.Q.")
             .images([
@@ -80,8 +81,8 @@ module.exports = [
                 builder.CardAction.postBack(session, "p_hawaiian", "Ordenar")
             ]);
 
-        let pizzaDeluxeHeroCard = new builder.HeroCard(session)
-            .title("Deluxe")
+        let pizzaCaprichosaHeroCard = new builder.HeroCard(session)
+            .title("Caprichosa")
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, champiñón y chorizo.")
             .images([
@@ -103,8 +104,8 @@ module.exports = [
             ]);
         // Fin de las heroCards
         // Array de pizzas
-        let pizzas = [pizzaColombianaHeroCard, pizzaFiestaPepperoniHeroCard, pizzaHawaianaHeroCard, pizzaHonoluluHeroCard, pizzaVegetarianaHeroCard,
-            pizzaExtraVaganzzaHeroCard, pizzaDeluxeHeroCard, pizzaBbqHeroCard, pizzaHawaiianChickHeroCard
+        let pizzas = [pizzaColombianaHeroCard, pizzaPepperoniHeroCard, pizzaHawaianaHeroCard, pizzaJamonHeroCard, pizzaVegetarianaHeroCard,
+            pizzaCuatroCarnesHeroCard, pizzaCaprichosaHeroCard, pizzaBbqHeroCard, pizzaHawaianaChickenkHeroCard
         ];
 
         let msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel).attachments(pizzas);

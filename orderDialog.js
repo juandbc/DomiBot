@@ -48,7 +48,21 @@ module.exports = [
         if (results.response) {
             session.dialogData.drink = results.response;
             // TODO : concatenar el nombre de la bebida
-            builder.Prompts.number(session, "¿Cuantas bebidas quieres llevar?<br>(Por favor ingresa la cantidad en digitos).");
+            builder.Prompts.choice(session, "¿De que tamaño deseas las bebidas?", ["1.5 L", "2.5 L"], {
+                listStyle: builder.ListStyle.button,
+                recognizeNumbers: true,
+                recognizeOrdinals: true
+            });
+        } else {
+            next();
+        }
+    },
+    function (session, results, next) {
+        print(results.response);
+        if (results.response) {
+            session.dialogData.drinkSize = results.response.entity;
+            // TODO : concatenar el nombre de la bebida
+            builder.Prompts.number(session, "¿Cuantas bebidas quieres llevar?<br>(Por favor ingresa la cantidad en digitos).");        
         } else {
             next();
         }
