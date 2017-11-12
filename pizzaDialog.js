@@ -9,7 +9,7 @@ module.exports = [
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, jamón, champiñón, aceituna, chorizo, carne molida y extraqueso.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/nativa.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_PCOLO.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_colom", "Ordenar")
@@ -20,7 +20,7 @@ module.exports = [
             .subtitle("Iniciando desde 24.900")
             .text("Doble pepperoni y extraqueso.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/pepperoni.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_PEXPLO.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_fpepperoni", "Ordenar")
@@ -31,7 +31,7 @@ module.exports = [
             .subtitle("Iniciando desde 24.900")
             .text("Extraqueso , Jamón y Piña")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/hawaiana.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_HNC.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_hawaiana", "Ordenar")
@@ -42,7 +42,7 @@ module.exports = [
             .subtitle("Iniciando desde 24.900")
             .text("Jalapeño, jamón, tocineta y piña.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/jamon.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_HOLULU.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_honolulu", "Ordenar")
@@ -53,7 +53,7 @@ module.exports = [
             .subtitle("Iniciando desde 24.900")
             .text("Cebolla, pimentón, champiñón y tomate.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/vegetariana.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_VGP.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_vegetariana", "Ordenar")
@@ -64,7 +64,7 @@ module.exports = [
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, jamón, champiñón, aceituna, chorizo, carne molida y extraqueso.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/cuatrocarnes.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_EXV.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_extravaganzza", "Ordenar")
@@ -75,7 +75,7 @@ module.exports = [
             .subtitle("Iniciando desde 27.900")
             .text("Queso Mozarella, trocitos de pollo, piña, tocineta y salsa B.B.Q.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/pollohawaiana.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_HWC.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_hawaiian", "Ordenar")
@@ -86,7 +86,7 @@ module.exports = [
             .subtitle("Iniciando desde 27.900")
             .text("Cebolla, pimentón, pepperoni, champiñón y chorizo.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/caprichosa.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_DX.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_deluxe", "Ordenar")
@@ -97,7 +97,7 @@ module.exports = [
             .subtitle("Iniciando desde 27.900")
             .text("Carne molida, tocineta, maíz tierno, salsa BBQ y cebolla.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/bbq.jpg")
+                builder.CardImage.create(session, "https://cache.dominos.com/olo/5_13_4/assets/build/market/CO/_es/images/img/products/thumbnails/S_STKB.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "p_bbq", "Ordenar")

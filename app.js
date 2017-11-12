@@ -1,10 +1,6 @@
 var restify = require("restify");
 var builder = require("botbuilder");
 var dotenv = require("dotenv");
-const http = require("./http");
-
-// Ejecuta servidor http para las imagenes
-http.run();
 
 // Obtener variables de configuracion
 dotenv.config();

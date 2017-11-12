@@ -8,7 +8,7 @@ module.exports = [
         .subtitle("Iniciando desde 2000")
         .text("El auténtico sabor de la bebida Coca Cola®, deliciosa con tus comidas")
         .images([
-            builder.CardImage.create(session, "http://localhost/img/cocacola.jpg")
+            builder.CardImage.create(session, "https://www.exito.com/images/products/504/0000762816593504/0000762817183876_lrg_a.jpg")
         ])
         .buttons([
             builder.CardAction.postBack(session, "pepsi", "Ordenar")
@@ -19,7 +19,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("El auténtico sabor de la bebida Pepsi®, una refrescante manera de compartir los mejores momentos")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/pepsi.jpg")
+                builder.CardImage.create(session, "https://www.exito.com/images/products/454/0000684434963454/0000684435839881_lrg_a.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "pepsi", "Ordenar")
@@ -30,7 +30,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("Colombiana")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/colombiana.jpg")
+                builder.CardImage.create(session, "https://www.exito.com/images/products/456/0000684438963456/0000684439840597_lrg_a.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "colombiana", "Ordenar")
@@ -41,7 +41,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("7UP")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/sevenup.jpg")
+                builder.CardImage.create(session, "https://www.exito.com/images/products/455/0000684436963455/0000684437839883_lrg_a.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "7up", "Ordenar")
@@ -52,7 +52,7 @@ module.exports = [
             .subtitle("Iniciando desde 2000")
             .text("Postobon Manzana")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/postobon.jpg")
+                builder.CardImage.create(session, "https://www.exito.com/images/products/447/0000684420963447/0000684421836180_lrg_a.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "manzana", "Ordenar")
@@ -63,7 +63,7 @@ module.exports = [
             .subtitle("Iniciando desde 5.500")
             .text("H2OH.")
             .images([
-                builder.CardImage.create(session, "http://localhost/img/h2oh.jpg")
+                builder.CardImage.create(session, "https://www.exito.com/images/products/974/0002523760675974/0002523761016446_lrg_a.jpg")
             ])
             .buttons([
                 builder.CardAction.postBack(session, "h2oh", "Ordenar")
