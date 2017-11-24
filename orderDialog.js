@@ -1,4 +1,6 @@
 var builder = require("botbuilder");
+var model = require("./model");
+
 // Dialogo para ordenar el pedido y solicitar la información del cliente
 module.exports = [
     function (session) {
@@ -7,12 +9,12 @@ module.exports = [
     function (session, results) {
         session.dialogData.pizza = results.response;
         // TODO : concatenar el nombre de la pizza
-        builder.Prompts.number(session, "¿Cuantas pizzas quieres llevar?<br>(Por favor ingresa la cantidad en digitos).");
+        builder.Prompts.number(session, "¿Cuantas pizzas quieres llevar? (Por favor ingresa la cantidad en digitos).");
     },
     function (session, results) {
         print(results.response);
         session.dialogData.quantity = results.response;
-        builder.Prompts.choice(session, "¿De que tamaño quieres la pizza?", ["small", "medium", "large", "extralarge"], {
+        builder.Prompts.choice(session, "¿De que tamaño quieres la pizza?", ["small", "medium", "large", "extra large"], {
             listStyle: builder.ListStyle.button,
             recognizeNumbers: true,
             recognizeOrdinals: true
@@ -62,7 +64,7 @@ module.exports = [
         if (results.response) {
             session.dialogData.drinkSize = results.response.entity;
             // TODO : concatenar el nombre de la bebida
-            builder.Prompts.number(session, "¿Cuantas bebidas quieres llevar?<br>(Por favor ingresa la cantidad en digitos).");        
+            builder.Prompts.number(session, "¿Cuantas bebidas quieres llevar? (Por favor ingresa la cantidad en digitos).");        
         } else {
             next();
         }
@@ -118,7 +120,7 @@ module.exports = [
                 }
             ])
             .buttons([
-                builder.CardAction.postBack(session, "aceptar", "Aceptar"),
+                builder.CardAction.postBack(session, "confirmar", "Confirmar"),
                 builder.CardAction.postBack(session, "cancelar", "Cancelar")
             ]);
         let msg = new builder.Message(session).addAttachment(receiptCard.toAttachment());

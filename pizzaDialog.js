@@ -104,9 +104,8 @@ module.exports = [
             ]);
         // Fin de las heroCards
         // Array de pizzas
-        let pizzas = [pizzaColombianaHeroCard, pizzaPepperoniHeroCard, pizzaHawaianaHeroCard, pizzaJamonHeroCard, pizzaVegetarianaHeroCard,
-            pizzaCuatroCarnesHeroCard, pizzaCaprichosaHeroCard, pizzaBbqHeroCard, pizzaHawaianaChickenkHeroCard
-        ];
+        let pizzas = [pizzaColombianaHeroCard, pizzaPepperoniHeroCard, pizzaHawaianaHeroCard, pizzaHawaianaChickenkHeroCard, pizzaJamonHeroCard,
+            pizzaVegetarianaHeroCard, pizzaCuatroCarnesHeroCard, pizzaCaprichosaHeroCard, pizzaBbqHeroCard];
 
         let msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel).attachments(pizzas);
         builder.Prompts.text(session, msg);

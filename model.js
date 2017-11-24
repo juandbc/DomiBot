@@ -5,7 +5,7 @@ class Order {
         this.drinks = drinks;
         this.client = client;
         this.date =  Date.now();
-        this.price = calculatePrice();
+        this.price = this.calculatePrice();
     }
 
     set id(id) { this.id = id; }
@@ -14,8 +14,8 @@ class Order {
     set date(date) { this.date = Date.now(); }
     get date() { return this.date; }
 
-    set pizzas(pizzas) {this.pizzas = pizzas}
-    get pizzas() { return this.pizzas}
+    set pizzas(pizzas) {this.pizzas = pizzas;}
+    get pizzas() { return this.pizzas;}
 
     set drinks(drinks) { this.drinks = drinks; }
     get drinks() { return this.drinks; }
@@ -23,8 +23,7 @@ class Order {
     set client(client) { this.client = client; }
     get client() { return this.client; }
 
-    // TODO : Calcular el precio
-    set price(price) { this.price =  calculatePrice(); }
+    set price(price) { this.price =  this.calculatePrice(); }
     get price() { return this.price; }
 
     addPizza(pizza) {
@@ -34,22 +33,18 @@ class Order {
 
     addDrinks(drink) {
         this.drinks.push(drink);
-        this.price += pizza.price;
+        this.price += this.pizza.price;
     }
 
     removePizza(pizza) {
         let index =  this.pizzas.indexOf(pizza);
-        if(index > -1) {
-            let temp = this.pizzas.slice(0, index);
-        }
+        this.pizzas.splice(index, 1);
         this.price -= pizza.price;
     }
 
     removeDrinks(drink) {
         let index =  this.drinks.indexOf(drink);
-        if(index > -1) {
-            let temp = this.drinks.slice(0, index);
-        }
+        this.drinks.splice(index, 1);
         this.price -= drink.price;
     }
 
@@ -71,7 +66,7 @@ class Pizza {
         this.description = description;
         this.quantity = quantity;
         this.ingredients = ingredients;
-        this.price = calculatePrice();
+        this.price = this.calculatePrice();
     }
 
     set id(id) { this.id = id; }
@@ -88,7 +83,7 @@ class Pizza {
 
     calculatePrice() {
         let total = 0;
-        for (const i of ingredients) {
+        for (const i of this.ingredients) {
             total += i.price;
         }
         this.price = total * this.quantity;
@@ -126,7 +121,7 @@ class Drink {
     set quantity(quantity) { this.quantity = quantity; }
     get quantity() { return this.quantity; }
 
-    set price(price) { this.price = price * quantity; }
+    set price(price) { this.price = price * this.quantity; }
     get price() { return this.price; }
 }
 

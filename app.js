@@ -1,6 +1,6 @@
 var restify = require("restify");
 var builder = require("botbuilder");
-var dotenv = require("dotenv");
+const dotenv = require("dotenv");
 
 // Obtener variables de configuracion
 dotenv.config();
@@ -29,7 +29,7 @@ server.post("/api/messages", botConnector.listen());
 bot.dialog("/", [
     function (session) {
         session.preferredLocale("es", (err) => {
-            console.log("error en el locale");
+            console.log("error en el locale" + err);
         });
         let time = new Date().getHours();
         let text;
