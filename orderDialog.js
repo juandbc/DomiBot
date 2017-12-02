@@ -1,5 +1,5 @@
-var builder = require("botbuilder");
-var model = require("./model");
+const builder = require("botbuilder");
+//const model = require("./model");
 
 // Dialogo para ordenar el pedido y solicitar la información del cliente
 module.exports = [
@@ -104,13 +104,6 @@ module.exports = [
         let receiptCard = new builder.ReceiptCard(session);
         receiptCard.title("Recibo pedido")
             .items([
-                {
-                    title: "Titulo",
-                    subtitle: "Subtitulo",
-                    text: "texto",
-                    quantity: "cantidad",
-                    price: "$ 5.000"
-                },
                 {
                     title: "Titulo",
                     subtitle: "Subtitulo",

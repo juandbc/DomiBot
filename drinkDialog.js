@@ -1,4 +1,4 @@
-var builder = require("botbuilder");
+const builder = require("botbuilder");
 // Diálogo para el menu de bebidas
 module.exports = [
     function (session) {

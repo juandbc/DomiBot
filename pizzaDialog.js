@@ -1,4 +1,4 @@
-var builder = require("botbuilder");
+const builder = require("botbuilder");
 // Diálogo para el menu de pizzas
 module.exports = [
     function (session) {

@@ -1,182 +1,193 @@
 class Order {
-    constructor(pizzas, drinks, client) {
-        this.id;
-        this.pizzas = pizzas;
-        this.drinks = drinks;
-        this.client = client;
-        this.date =  Date.now();
-        this.price = this.calculatePrice();
+    constructor(id, client, status, date, payment, pizzas, drinks) {
+        this._id = id;
+        this._status = status;
+        this._date = date;
+        this._payment = payment;
+        this._pizzas = pizzas;
+        this._drinks = drinks;
+        this._client = client;
+        this._price = this.calculatePrice();
+        this._tax = this._price * 0.19;
+        this._total = this._tax + this._price;
     }
 
-    set id(id) { this.id = id; }
-    get id() { return this.id; }
+    set id(id) { this._id = id; }
+    get id() { return this._id; }
 
-    set date(date) { this.date = Date.now(); }
-    get date() { return this.date; }
+    set status(status) { this._status = status; }
+    get status() { return this._status; }
 
-    set pizzas(pizzas) {this.pizzas = pizzas;}
-    get pizzas() { return this.pizzas;}
+    set date(date) { this._date = date; }
+    get date() { return this._date; }
 
-    set drinks(drinks) { this.drinks = drinks; }
-    get drinks() { return this.drinks; }
+    set payment(payment) { this._payment = payment; }
+    get payment() { return this._payment; }
 
-    set client(client) { this.client = client; }
-    get client() { return this.client; }
+    set pizzas(pizzas) { this._pizzas = pizzas; }
+    get pizzas() { return this._pizzas; }
 
-    set price(price) { this.price =  this.calculatePrice(); }
-    get price() { return this.price; }
+    set drinks(drinks) { this._drinks = drinks; }
+    get drinks() { return this._drinks; }
+
+    set client(client) { this._client = client; }
+    get client() { return this._client; }
+
+    set price(price) { this._price = price; }
+    get price() { return this._price; }
+
+    get tax() { return this._tax; }
+    get total() { return this._total; }
 
     addPizza(pizza) {
-        this.pizzas.push(pizza);
-        this.price += pizza.price;
+        this._pizzas.push(pizza);
+        this._price += pizza.price;
     }
 
     addDrinks(drink) {
-        this.drinks.push(drink);
-        this.price += this.pizza.price;
+        this._drinks.push(drink);
+        this._price += this._pizza.price;
     }
 
     removePizza(pizza) {
-        let index =  this.pizzas.indexOf(pizza);
-        this.pizzas.splice(index, 1);
-        this.price -= pizza.price;
+        let index = this._pizzas.indexOf(pizza);
+        this._pizzas.splice(index, 1);
+        this._price -= pizza.price;
     }
 
     removeDrinks(drink) {
-        let index =  this.drinks.indexOf(drink);
-        this.drinks.splice(index, 1);
-        this.price -= drink.price;
+        let index = this._drinks.indexOf(drink);
+        this._drinks.splice(index, 1);
+        this._price -= drink.price;
     }
 
     calculatePrice() {
-        let total = 0;
-        for (const p of this.pizzas) {
-            total += p.price;
+        let price = 0;
+        for (let p of this._pizzas) {
+            price += p.price;
         }
-        for (const d of this.drinks) {
-            total += d.price;
+        for (let d of this._drinks) {
+            price += d.price;
         }
-        this.price = total;
+        console.log("TOTAL DEL PEDIDO: " + price);
+        return price;
     }
 }
 
 class Pizza {
-    constructor(id, description, quantity, ingredients) {
-        this.id = id;
-        this.description = description;
-        this.quantity = quantity;
-        this.ingredients = ingredients;
-        this.price = this.calculatePrice();
+    constructor(id, description, quantity, price) {
+        this._id = id;
+        this._description = description;
+        this._quantity = quantity;
+        //this._extra = extra;
+        this._price = price;
+        this.calculatePrice();
     }
 
-    set id(id) { this.id = id; }
-    get id() { return this.id; }
-    
-    set description(description) { this.description = description; }
-    get description() { return this.description; }
+    set id(id) { this._id = id; }
+    get id() { return this._id; }
 
-    set quantity(quantity) { this.quantity = quantity; }
-    get quantity() { return this.quantity; }
+    set description(description) { this._description = description; }
+    get description() { return this._description; }
 
-    set ingredients(ingredients) { this.ingredients = ingredients; }
-    get ingredients() { return this.ingredients; }
+    set quantity(quantity) { this._quantity = quantity; }
+    get quantity() { return this._quantity; }
+
+    set price(price) { this._price = price; }
+    get price() { return this._price; }
+
+    set extra(extra) { this._extra = extra; }
+    get extra() { return this._extra; }
 
     calculatePrice() {
-        let total = 0;
-        for (const i of this.ingredients) {
-            total += i.price;
-        }
-        this.price = total * this.quantity;
+        this._price = this._price * this._quantity;
     }
 
-    addIngredient(ingredient) {
-        this.ingredients.push(ingredient);
-        this.price += ingredient.price;
+    addExtra(extra) {
+        this._extra = extra;
+        this.calculatePrice();
     }
 
-    removeIngredient(ingredient) {
-        let index = this.ingredients.indexOf(ingredient);
-        if(index > -1) {
-            let temp = this.ingredients.slice(0, index);
-            this.ingredient.push(temp);
-        }
-        this.price -= ingredient.price;
+    removeExtra() {
+        this.calculatePrice();
+        this._extra = null;
     }
 }
 
 class Drink {
     constructor(id, description, quantity, price) {
-        this.id = id;
-        this.description = description;
-        this.quantity = quantity;
-        this.price = price * quantity;
+        this._id = id;
+        this._description = description;
+        this._quantity = quantity;
+        this._price = price;
+        this.calculatePrice();
     }
 
-    set id(id) { this.id = id; }
-    get id() { return this.id; }
+    set id(id) { this._id = id; }
+    get id() { return this._id; }
 
-    set description(description) { this.description = description; }
-    get description() { return this.description; }
+    set description(description) { this._description = description; }
+    get description() { return this._description; }
 
-    set quantity(quantity) { this.quantity = quantity; }
-    get quantity() { return this.quantity; }
+    set quantity(quantity) { this._quantity = quantity; }
+    get quantity() { return this._quantity; }
 
-    set price(price) { this.price = price * this.quantity; }
-    get price() { return this.price; }
+    set price(price) { this._price = price; }
+    get price() { return this._price; }
+
+    calculatePrice() {
+        this._price = this._price * this._quantity;
+    }
 }
 
-class Ingredient {
+class Extra {
     constructor(id, description, price) {
-        this.id = id;
-        this.description = description;
-        this.price = price;
+        this._id = id;
+        this._description = description;
+        this._price = price;
     }
 
-    set id(id) { this.id = id; }
-    get id() { return this.id; }
+    set id(id) { this._id = id; }
+    get id() { return this._id; }
 
-    set description(description) { this.description = description; }
-    get description() { return this.description; }
+    set description(description) { this._description = description; }
+    get description() { return this._description; }
 
-    set price(price) { this.price = price; }
-    get price() { return this.price; }
+    set price(price) { this._price = price; }
+    get price() { return this._price; }
 }
 
 class Client {
-    constructor(cedula, firstName, lastName, phone, cellphone, address, city) {
-        this.cedula = cedula;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.cellphone = cellphone;
-        this.address = address;
-        this.city = city;
+    constructor(id, fullName, phone, cellphone, address, city) {
+        this._id = id;
+        this._fullName = fullName;
+        this._phone = phone;
+        this._cellphone = cellphone;
+        this._address = address;
+        this._city = city;
     }
 
-    set cedula(cedula) { this.cedula = cedula; }
-    get cedula() { return this.cedula; }
+    set id(id) { this._id = id; }
+    get id() { return this._id; }
 
-    set firstName(firstName) { this.firstName = firstName; }
-    get firstName() { return this.firstName; }
+    set fullName(fullName) { this._fullName = fullName; }
+    get fullName() { return this._fullName; }
 
-    set lastName(lastName) { this.lastName = lastName; }
-    get lastName() { return this.lastName; }
+    set phone(phone) { this._phone = phone; }
+    get phone() { return this._phone; }
 
-    set phone(phone) { this.phone = phone; }
-    get phone() { return this.phone; }
+    set cellphone(cellphone) { this._cellphone = cellphone; }
+    get cellphone() { return this._cellphone; }
 
-    set cellphone(cellphone) { this.cellphone = cellphone; }
-    get cellphone() { return this.cellphone; }
+    set address(address) { this._address = address; }
+    get address() { return this._address; }
 
-    set address(address) { this.address = address; }
-    get address() { return this.address; }
-
-    set city(city) { this.city = city; }
-    get city() { return this.city; }
+    set city(city) { this._city = city; }
+    get city() { return this._city; }
 }
 
 module.exports.Client = Client;
-module.exports.Ingredient = Ingredient;
+module.exports.Extra = Extra;
 module.exports.Pizza = Pizza;
 module.exports.Drink = Drink;
 module.exports.Order = Order;

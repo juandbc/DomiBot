@@ -1,24 +1,25 @@
-var restify = require("restify");
-var builder = require("botbuilder");
+const restify = require("restify");
+const builder = require("botbuilder");
 const dotenv = require("dotenv");
 
 // Obtener variables de configuracion
 dotenv.config();
 
 // Crear servidor http restify
-var server = restify.createServer();
+const server = restify.createServer();
 server.listen(process.env.port || process.env.PORT, function () {
     console.log("%s listening at %s", server.name, server.url);
 });
 
 // Conector del bot framework service
-var botConnector = new builder.ChatConnector({
+const botConnector = new builder.ChatConnector({
     appId: process.env.APP_ID,
     appPassword: process.env.APP_PASSWORD
 });
 
 // Creacion del bot
-var bot = new builder.UniversalBot(botConnector, {
+const bot = new builder.UniversalBot(botConnector, {
+    storage: new builder.MemoryBotStorage(),
     localizerSettings: {
         defaultLocale: "es"
     }
@@ -29,7 +30,7 @@ server.post("/api/messages", botConnector.listen());
 bot.dialog("/", [
     function (session) {
         session.preferredLocale("es", (err) => {
-            console.log("error en el locale" + err);
+            if (err) console.error("error en el locale", err);
         });
         let time = new Date().getHours();
         let text;
@@ -54,30 +55,27 @@ bot.dialog("/", [
                 session.beginDialog("order");
                 break;
             case "Consultar mi pedido":
-                session.beginDialog("search");
+                session.beginDialog("query");
                 break;
         }
     },
     function (session) {
-        builder.Prompts.confirm(session, "Desea realizar algo más", {
-            listStyle: builder.ListStyle.button
-        });
+        session.sendTyping();
+        setTimeout(() => {
+            builder.Prompts.confirm(session, "¿Desea realizar algo más?", {
+                listStyle: builder.ListStyle.button
+            });
+        }, 2000);
     },
     function (session, results) {
-        switch (results.reponse) {
-            case "si":
-                session.reset("/");
-                break;
-            case "no":
-                session.send("Gracias por preferirnos, espero que volvamos hablar pronto.");
-                session.send("Disfruta tu pedido.");
-                session.endConvesation();
-                break;
+        if (results.reponse) {
+            session.reset("/");
+        } else {
+            session.endConversation("Gracias por preferirnos, espero que volvamos hablar pronto.");
         }
     }
 ]).endConversationAction("end", "Está bien, espero que volvamos hablar pronto.", {
     matches: /\b(adiós|cancelar|adios|chao)\b|\b(muchas gracias|gracias)\b/ig,
-    //TODO : mostrar las opciones como confirm 
     confirmPrompt: "¿Estás seguro que deseas cancelar el pedido?"
 });
 
@@ -106,8 +104,8 @@ bot.dialog("drink", require("./drinkDialog")).triggerAction({
 });
 
 // Dialogo consultar estado del pedido
-bot.dialog("search", require("./searchDialog")).triggerAction({
-    matches: [/\bconsultar\b/ig, /\bver\b/ig, /\bestado\b/ig],
+bot.dialog("query", require("./queryOrderDialog")).triggerAction({
+    matches: [/\bconsultar\b/ig, /\bver pedido\b/ig, /\bestado\b/ig],
     onSelectAction: function (session, args) {
         session.beginDialog(args.action, args);
     }
