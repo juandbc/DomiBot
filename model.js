@@ -1,3 +1,4 @@
+"use strict";
 class Order {
     constructor(id, client, status, date, payment, pizzas, drinks) {
         this._id = id;
@@ -79,7 +80,6 @@ class Pizza {
         this._id = id;
         this._description = description;
         this._quantity = quantity;
-        //this._extra = extra;
         this._price = price;
         this.calculatePrice();
     }
@@ -96,21 +96,8 @@ class Pizza {
     set price(price) { this._price = price; }
     get price() { return this._price; }
 
-    set extra(extra) { this._extra = extra; }
-    get extra() { return this._extra; }
-
     calculatePrice() {
         this._price = this._price * this._quantity;
-    }
-
-    addExtra(extra) {
-        this._extra = extra;
-        this.calculatePrice();
-    }
-
-    removeExtra() {
-        this.calculatePrice();
-        this._extra = null;
     }
 }
 

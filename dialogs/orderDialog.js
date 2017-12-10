@@ -1,10 +1,8 @@
 const builder = require("botbuilder");
-//const model = require("./model");
-
 // Dialogo para ordenar el pedido y solicitar la información del cliente
 module.exports = [
     function (session) {
-        session.beginDialog("pizza");
+        session.beginDialog("pizzas");
     },
     function (session, results) {
         session.dialogData.pizza = results.response;
@@ -23,15 +21,6 @@ module.exports = [
     function (session, results) {
         print(results.response.entity);
         session.dialogData.size = results.response.entity;
-        builder.Prompts.confirm(session, "¿Desea agregarle borde de que a su pizza?", {
-            listStyle: builder.ListStyle.button,
-            recognizeNumbers: true,
-            recognizeOrdinals: true
-        });
-    },
-    function (session, results) {
-        print(results.response);
-        session.dialogData.cheezeBorder = results.response;
         builder.Prompts.confirm(session, "¿Deseas incluir alguna bebida en el pedido?", {
             listStyle: builder.ListStyle.button,
             recognizeNumbers: true,
@@ -40,7 +29,7 @@ module.exports = [
     },
     function (session, results, next) {
         if (results.response) {
-            session.beginDialog("drink");
+            session.beginDialog("drinks");
         } else {
             next();
         }

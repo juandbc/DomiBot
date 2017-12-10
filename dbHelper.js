@@ -1,3 +1,4 @@
+"use strict";
 const model = require("./model");
 const mysql = require("mysql"); // Conexion a la base de datos
 const pool = mysql.createPool({
@@ -5,8 +6,57 @@ const pool = mysql.createPool({
     host: "localhost",
     database: "testdb",
     user: "root",
-    password: "123456"
+    password: "developer"
 });
+
+// Obtener el listado de pizzas
+function getPizzas() {
+    return new Promise(function (resolve, reject) {
+        let pizzas = [];
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                console.error("ERROR EN LA CONEXION DE MYSQL", err);
+                reject(null);
+            }
+            connection.query("SELECT * FROM PIZZA", (error, rows) => {
+                if (error) {
+                    console.error(error);
+                    throw error;
+                }
+                rows.forEach(row => {
+                    console.log(row.ID_PIZZA);
+                    let pizza = new model.Pizza(row.ID, row.DESCRIPCION, 1, row.PRECIO);
+                    pizzas.push(pizza);
+                });
+            });
+        });
+        resolve(pizzas);
+    });
+}
+
+// Obtener el listado de bebidas
+function getDrinks() {
+    return new Promise(function (resolve, reject) {
+        let drinks = [];
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                console.error("ERROR EN LA CONEXION DE MYSQL", err);
+                reject(null);
+            }
+            connection.query("SELECT * FROM BEBIDA", (error, rows) => {
+                if (error) {
+                    console.error(error);
+                    throw error;
+                }
+                rows.forEach(row => {
+                    let pizza = new model.Pizza(row.ID, row.DESCRIPCION, 1, row.PRECIO);
+                    drinks.push(pizza);
+                });
+            });
+        });
+        resolve(drinks);
+    });
+}
 
 function queryOrder(id) {
     return new Promise(function (resolve, reject) {
@@ -16,8 +66,8 @@ function queryOrder(id) {
         let drinks = [];
 
         pool.getConnection(function (err, connection) {
-            if (err) { 
-                console.error("ERROR EN LA CONEXION DE MYSQL", err); 
+            if (err) {
+                console.error("ERROR EN LA CONEXION DE MYSQL", err);
                 reject(null);
             }
             /* Busca y obtener el adicional
@@ -37,7 +87,7 @@ function queryOrder(id) {
                 });
                 return extra;
             }*/
-            
+
             // Obtener las pizzas
             connection.query("SELECT * FROM ORDEN_PIZZA OP JOIN PIZZA P ON P.ID = OP.ID_PIZZA WHERE OP.ID_ORDEN = ?", [id], (error, rows) => {
                 if (error) {
@@ -135,5 +185,9 @@ function insertClient(client) {
     return true;
 }
 
+module.exports.getPizzas = getPizzas;
+module.exports.getDrinks = getDrinks;
 module.exports.saveOrder = insertOrder;
 module.exports.queryOrder = queryOrder;
+module.exports.insertOrder = insertOrder;
+module.exports.insertClient = insertClient;

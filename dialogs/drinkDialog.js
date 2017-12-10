@@ -1,4 +1,6 @@
+"use strict";
 const builder = require("botbuilder");
+const db = require("./../dbHelper");
 // Diálogo para el menu de bebidas
 module.exports = [
     function (session) {

@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/JuanB3r/DomiBot#readme",
   "dependencies": {
-    "botbuilder": "^3.11.0",
+    "botbuilder": "^3.13.1",
     "dotenv": "^4.0.0",
     "mysql": "^2.15.0",
-    "restify": "^6.3.2"
+    "restify": "^6.3.4"
   }
 }
