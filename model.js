@@ -8,9 +8,9 @@ class Order {
         this._pizzas = pizzas;
         this._drinks = drinks;
         this._client = client;
-        this._price = this.calculatePrice();
-        this._tax = this._price * 0.19;
-        this._total = this._tax + this._price;
+        this._subtotal = this.calculateSubtotal();
+        this._tax = this._subtotal * 0.19;
+        this._total = this._tax + this._subtotal;
     }
 
     set id(id) { this._id = id; }
@@ -34,35 +34,39 @@ class Order {
     set client(client) { this._client = client; }
     get client() { return this._client; }
 
-    set price(price) { this._price = price; }
-    get price() { return this._price; }
+    set subtotal(subtotal) { this._subtotal = subtotal; }
+    get subtotal() { return this._subtotal; }
 
     get tax() { return this._tax; }
     get total() { return this._total; }
 
     addPizza(pizza) {
         this._pizzas.push(pizza);
-        this._price += pizza.price;
+        this._subtotal += pizza.price;
+        this.calculateSubtotal();
     }
 
     addDrinks(drink) {
         this._drinks.push(drink);
-        this._price += this._pizza.price;
+        this._subtotal += this._pizza.price;
+        this.calculateSubtotal();
     }
 
     removePizza(pizza) {
         let index = this._pizzas.indexOf(pizza);
         this._pizzas.splice(index, 1);
-        this._price -= pizza.price;
+        this._subtotal -= pizza.price;
+        this.calculateSubtotal();
     }
 
     removeDrinks(drink) {
         let index = this._drinks.indexOf(drink);
         this._drinks.splice(index, 1);
-        this._price -= drink.price;
+        this._subtotal -= drink.price;
+        this.calculateSubtotal();
     }
 
-    calculatePrice() {
+    calculateSubtotal() {
         let price = 0;
         for (let p of this._pizzas) {
             price += p.price;
@@ -70,8 +74,17 @@ class Order {
         for (let d of this._drinks) {
             price += d.price;
         }
-        console.log("TOTAL DEL PEDIDO: " + price);
+        console.log("SUBTOTAL DEL PEDIDO: " + price);
         return price;
+    }
+
+    calculateTaxies() {
+        this._tax = this._subtotal * 0.19;
+    }
+
+    calculateTotal() {
+        this._total = this._tax + this._subtotal;
+        console.log("SUBTOTAL DEL PEDIDO: " + this._total);
     }
 }
 
@@ -90,7 +103,7 @@ class Pizza {
     set description(description) { this._description = description; }
     get description() { return this._description; }
 
-    set quantity(quantity) { this._quantity = quantity; }
+    set quantity(quantity) { this._quantity = quantity; this.calculatePrice(); }
     get quantity() { return this._quantity; }
 
     set price(price) { this._price = price; }
@@ -116,7 +129,7 @@ class Drink {
     set description(description) { this._description = description; }
     get description() { return this._description; }
 
-    set quantity(quantity) { this._quantity = quantity; }
+    set quantity(quantity) { this._quantity = quantity; this.calculatePrice(); }
     get quantity() { return this._quantity; }
 
     set price(price) { this._price = price; }

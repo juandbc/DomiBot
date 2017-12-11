@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * Diálogo para tomar el pedido de pizzas
+ */
 const Pizza = require("./../model").Pizza;
 const builder = require("botbuilder");
 
@@ -32,7 +35,7 @@ module.exports = [
         if (results.response) {
             session.replaceDialog("orderPizza", { reprompt: true });
         } else {
-            // TODO : la tarjeta recibo
+            // TODO: la tarjeta recibo
             let msg = receipt;
             session.send(msg);
             builder.Prompts.confirm(session, "¿Es correcta la información?");

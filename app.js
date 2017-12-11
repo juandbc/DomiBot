@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * Archivo main del bot:
+ * importa los modulos y archivos de configuración, conexión al endpoint
+ * servicio cognitivode microsoft: LUIS.
+ * También contiene el diálogo raiz de la conversación
+ */
 const getPizzas = require("./dbHelper").getPizzas;
 const getDrinks = require("./dbHelper").getDrinks;
 
@@ -14,7 +20,7 @@ const goodBye = "Adiós";
 
 // Variables globales de la lista de pizzas y bebidas
 getPizzas().then(pizzas => {
-    global.globalPizzas = pizzas;    
+    global.globalPizzas = pizzas;
 });
 getDrinks().then(drinks => {
     global.globalDrinks = drinks;
@@ -78,7 +84,7 @@ bot.on("contactRelationUpdate", function (message) {
         var name = message.user ? message.user.name : null;
         var reply = new builder.Message()
                 .address(message.address)
-                .text("Hola %s... Gracias por añadirme a tu lista de contactos.", name || "there");
+                .text("Hola %s... Gracias por añadirme a tu lista de contactos.", name || "");
         bot.send(reply);
     }
 });
@@ -89,7 +95,7 @@ bot.dialog("/", [
         session.preferredLocale("es", (err) => {
             if (err) console.error("error en el locale", err);
         });        
-        builder.Prompts.choice(session, "¿En que puedo ayudarte?", "Ver la carta|Consultar mi pedido", {
+        builder.Prompts.choice(session, "¿En que puedo ayudarte?", "Realizar un pedido|Consultar mi pedido", {
             listStyle: builder.ListStyle.button,
             recognizeNumbers: true,
             recognizeOrdinals: true
@@ -98,7 +104,7 @@ bot.dialog("/", [
     },
     function (session, results) {
         switch (results.response.entity) {
-            case "Ver la carta":
+            case "Realizar un pedido":
                 session.beginDialog("order");
                 break;
             case "Consultar mi pedido":
@@ -116,6 +122,7 @@ bot.dialog("/", [
     },
     function (session, results) {
         if (results.reponse) {
+            session.send("empezando de nuevo");
             session.reset("/");
         } else {
             session.endConversation("Gracias por preferirnos, espero que volvamos hablar pronto.");
@@ -140,7 +147,7 @@ function greet() {
     return text;
 }
 
-// Dialogo ordenar pedido
+// Diálogo ordenar pedido
 bot.dialog("order", require("./dialogs/orderDialog")).triggerAction({
     matches: [/\bbordenar\b/ig, /\bpedir\b/ig],
     onSelectAction: function (session, args) {
@@ -148,7 +155,7 @@ bot.dialog("order", require("./dialogs/orderDialog")).triggerAction({
     }
 }).beginDialogAction("orderHelp", "help", { matches: /^help$/ig});
 
-// Dialogo menu de pizzas
+// Diálogo menu de pizzas
 bot.dialog("pizzas", require("./dialogs/pizzaDialog")).triggerAction({
     matches: [/ver la carta|(menu|menú) de pizzas/ig, /ver pizzas/ig],
     onSelectAction: function (session, args) {
@@ -156,7 +163,7 @@ bot.dialog("pizzas", require("./dialogs/pizzaDialog")).triggerAction({
     }
 });
 
-// Dialogo menu de bebidas
+// Diálogo menu de bebidas
 bot.dialog("drinks", require("./dialogs/drinkDialog")).triggerAction({
     matches: [/ver la carta de bebidas|(menu|menú) de bebidas/ig, /^ver bebidas$/ig],
     onSelectAction: function (session, args) {
@@ -164,13 +171,13 @@ bot.dialog("drinks", require("./dialogs/drinkDialog")).triggerAction({
     }
 });
 
-// Dialogo consultar estado del pedido
+// Diálogo consultar estado del pedido
 bot.dialog("queryOrder", require("./dialogs/queryOrderDialog")).triggerAction({
     matches: "consultarPedido",
     confirmPrompt: "Seguro?"
 });
 
-// Dialogo ordenar pizza
+// Diálogo ordenar pizza
 bot.dialog("orderPizza", require("./dialogs/orderPizzaDialog")).triggerAction({
     matches: "ordenarPizza",
     onSelectAction: function (session, args) {
@@ -180,15 +187,15 @@ bot.dialog("orderPizza", require("./dialogs/orderPizzaDialog")).triggerAction({
     matches: /\bañadir pizza\b/ig
 });
 
-// Dialogo ordenar bebida
-/*bot.dialog("orderDrink", require("./dialogs/orderDrinkDialog")).triggerAction({
+// Diálogo ordenar bebida
+bot.dialog("orderDrink", require("./dialogs/orderDrinkDialog")).triggerAction({
     matches: "ordenarBebida",
     onSelectAction: function (session, args) {
         session.beginDialog(args.action, args);
     }
-});*/
+});
 
-// Dialogo cancelar pedido
+// Diálogo cancelar pedido
 bot.dialog("cancelOrder", require("./dialogs/cancelOrderDialog")).triggerAction({
     matches: "cancelarPedido",
     onSelectAction: function (session, args) {
@@ -196,14 +203,14 @@ bot.dialog("cancelOrder", require("./dialogs/cancelOrderDialog")).triggerAction(
     }
 });
 
-/*
-bot.dialog("", require("./dialogs")).triggerAction({
-    matches: "cambiarPizza",
+// Diálogo obtener datos del cliente
+bot.dialog("dataClient", require("./dialogs/dataClientDialog")).triggerAction({
+    matches: "guardarDatos",
     onSelectAction: function (session, args) {
         session.beginDialog(args.action, args);
     }
 });
-
+/*
 bot.dialog("", require("./dialogs")).triggerAction({
     matches: "cambiarBebida",
     onSelectAction: function (session, args) {

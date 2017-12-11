@@ -24,13 +24,13 @@ function getPizzas() {
                     throw error;
                 }
                 rows.forEach(row => {
-                    console.log(row.ID_PIZZA);
+                    //console.log("PIZZA ID: " + row.ID);
                     let pizza = new model.Pizza(row.ID, row.DESCRIPCION, 1, row.PRECIO);
                     pizzas.push(pizza);
                 });
+                resolve(pizzas);
             });
         });
-        resolve(pizzas);
     });
 }
 
@@ -49,15 +49,17 @@ function getDrinks() {
                     throw error;
                 }
                 rows.forEach(row => {
-                    let pizza = new model.Pizza(row.ID, row.DESCRIPCION, 1, row.PRECIO);
-                    drinks.push(pizza);
+                    //console.log("BEBIDA ID: " + row.ID);
+                    let drink = new model.Drink(row.ID, row.DESCRIPCION, 1, row.PRECIO);
+                    drinks.push(drink);
                 });
+                resolve(drinks);
             });
         });
-        resolve(drinks);
     });
 }
 
+// Busca una pedido por su id
 function queryOrder(id) {
     return new Promise(function (resolve, reject) {
         let order;
@@ -95,7 +97,7 @@ function queryOrder(id) {
                     throw error;
                 }
                 rows.forEach(row => {
-                    console.log(row.ID_PIZZA);
+                    //console.log(row.ID_PIZZA);
                     let pizza = new model.Pizza(row.ID_PIZZA, row.DESCRIPCION, row.CANTIDAD, row.PRECIO_PIZZA);
                     pizzas.push(pizza);
                 });
@@ -108,7 +110,7 @@ function queryOrder(id) {
                     throw error;
                 }
                 rows.forEach(row => {
-                    console.log(row.ID_BEBIDA);
+                    //console.log(row.ID_BEBIDA);
                     let drink = new model.Drink(row.ID, row.DESCRIPCION, row.CANTIDAD, row.PRECIO);
                     drinks.push(drink);
                 });
@@ -120,7 +122,9 @@ function queryOrder(id) {
                     console.error(error);
                     throw error;
                 }
-                client = new model.Client(rows[0].CEDULA, rows[0].NOMBRE, rows[0].TELEFONO, rows[0].CELULAR, rows[0].DIRECCION, rows[0].CIUDAD);
+                if (rows.length > 0) {
+                    client = new model.Client(rows[0].CEDULA, rows[0].NOMBRE, rows[0].TELEFONO, rows[0].CELULAR, rows[0].DIRECCION, rows[0].CIUDAD);
+                }
             });
 
             // Obtener el pedido
@@ -129,7 +133,9 @@ function queryOrder(id) {
                     console.error(error);
                     throw error;
                 }
-                order = new model.Order(id, client, rows[0].ESTADO, rows[0].FECHA, rows[0].METODO_PAGO, pizzas, drinks);
+                if (rows.length > 0) {
+                    order = new model.Order(id, client, rows[0].ESTADO, rows[0].FECHA, rows[0].METODO_PAGO, pizzas, drinks);
+                }
                 connection.release();
                 console.log(order);
                 resolve(order);
@@ -138,56 +144,125 @@ function queryOrder(id) {
     });
 }
 
+// Guarda una pedido en el sistema
 function insertOrder(order) {
-    if (insertClient(order.Client)) {
-        let sqlStament = "INSERT INTO ORDEN (ID, ID_CLIENTE, FECHA, PRECIO) VALUES (?,?,?,?)";
-        pool.query(sqlStament, [order.Id, order.Client.id, order.Date, order.Price], (error, rows) => {
-            if (error) {
-                console.error(error);
-                throw error;
+    return new Promise((resolve, reject) => {
+        insertClient(order.Client).then(response => {
+            if (response) {
+                pool.getConnection((err, connection) => {
+                    if (err) {
+                        console.error("ERROR EN LA CONEXION DE MYSQL", err);
+                        reject(false);
+                    }
+                    connection.beginTransaction(err => {
+                        if (err) {
+                            console.log("ERROR EN BEGIN TRANSACT");
+                            console.error(err);
+                            throw err;
+                        }
+                        let sqlStament = "INSERT INTO ORDEN VALUES (?,?,?,?,?,?,?,?)";
+                        connection.query(sqlStament, [order.id, order.Client.id, order.status, order.Date, order.payment, order.subtotal, order.tax, order.total], (error, rows) => {
+                            if (error) {
+                                console.log("ERROR EN INSERT ORDEN");
+                                console.error(error);
+                                connection.rollback(() => {
+                                    throw error;
+                                });
+                            }
+                            console.log("NUEVO ID: " + rows.insertId);
+                            order.id = rows.insertId;
+                            console.log(rows);
+                        });
+                        order.Pizzas.forEach(pizza => {
+                            let sqlStament = "INSERT INTO ORDEN_PIZZA VALUES (?,?,?,?,?,?)";
+                            connection.query(sqlStament, [order.id, pizza.id, pizza.price, pizza.quantity], (error, rows) => {
+                                if (error) {
+                                    console.log("ERROR EN INSERT PIZZAS");
+                                    console.error(error);
+                                    throw error;
+                                }
+                                console.log(rows);
+                            });
+                        });
+
+                        order.Drinks.forEach(drink => {
+                            let sqlStament = "INSERT INTO ORDEN_BEBIDA VALUES (?,?,?,?)";
+                            connection.query(sqlStament, [order.id, drink.id, drink.price, drink.quantity], (error, rows) => {
+                                if (error) {
+                                    console.log("ERROR EN INSERT DRINKS");
+                                    console.error(error);
+                                    throw error;
+                                }
+                                console.log(rows);
+                            });
+                        });
+                        connection.commit(function (err) {
+                            if (err) {
+                                console.log("ERROR EN COMMIT");
+                                console.error(err);
+                                return connection.rollback(function () {
+                                    throw err;
+                                });
+                            }
+                            console.log("ORDER SUCCESS!");
+                            resolve(order);
+                        });
+                    });
+                });
             }
-            console.log(rows);
+        }).catch(onRejected => {
+            console.error(onRejected);
+            reject(false);
         });
-
-        order.Pizzas.forEach(pizza => {
-            let sqlStament = "INSERT INTO ORDEN_PIZZA VALUES (?,?,?,?,?,?)";
-            pool.query(sqlStament, [order.Id, pizza.Id, pizza.Extra.Id, pizza.Price, pizza.Extra.Price, pizza.Quantity], (error, rows) => {
-                if (error) {
-                    console.error(error);
-                    throw error;
-                }
-                console.log(rows);
-            });
-        });
-
-        order.Drinks.forEach(drink => {
-            let sqlStament = "INSERT INTO ORDEN_BEBIDA VALUES (?,?,?,?)";
-            pool.query(sqlStament, [order.Id, drink.Id, drink.Price, drink.Quantity], (error, rows) => {
-                if (error) {
-                    console.error(error);
-                    throw error;
-                }
-                console.log(rows);
-            });
-        });
-    }
+    });
 }
 
 function insertClient(client) {
-    let sqlStament = "INSERT INTO CLIENTE VALUES (?,?,?,?,?,?)";
-    pool.query(sqlStament, [client.id, client.fullName, client.phone, client.cellphone, client.addres, client.city], (error, rows) => {
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        console.log(rows);
+    let sqlQueryStament = "SELECT CEDULA FROM CLIENTE";
+    let sqlInsertStament = "INSERT INTO CLIENTE VALUES (?,?,?,?,?,?)";
+    return new Promise(function (resolve, reject) {
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                console.error("ERROR EN LA CONEXION DE MYSQL", err);
+                reject(false);
+            }
+
+            connection.query(sqlQueryStament, (error, rows) => {
+                if (error) {
+                    console.log("ERROR EN QUERY CLIENTE");
+                    console.error(error);
+                    throw error;
+                }
+                if (rows.length === 0) {
+                    connection.query(sqlInsertStament, [client.id, client.fullName, client.phone, client.cellphone, client.addres, client.city], (error, rows) => {
+                        if (error) {
+                            console.log("ERROR EN INSERT CLIENTE");                            
+                            console.error(error);
+                            throw error;
+                        }
+                        console.log(rows);
+                        connection.commit(function (err) {
+                            if (err) {
+                                console.log("ERROR EN COMMIT");
+                                console.error(err);
+                                return connection.rollback(function () {
+                                    throw err;
+                                });
+                            }
+                            console.log("CLIENT SUCCESS!");
+                            resolve(true);
+                        });
+                    });
+                } else {
+                    reject(false);
+                }
+            });
+        });
     });
-    return true;
 }
 
 module.exports.getPizzas = getPizzas;
 module.exports.getDrinks = getDrinks;
-module.exports.saveOrder = insertOrder;
 module.exports.queryOrder = queryOrder;
 module.exports.insertOrder = insertOrder;
 module.exports.insertClient = insertClient;
