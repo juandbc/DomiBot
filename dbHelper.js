@@ -254,7 +254,7 @@ function insertClient(client) {
                         });
                     });
                 } else {
-                    reject(false);
+                    
                 }
             });
         });
