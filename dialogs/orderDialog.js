@@ -5,16 +5,12 @@
 const builder = require("botbuilder");
 const model = require("./../model");
 const db = require("./../dbHelper");
-const print = require("./../utils").print;
-const printReceiptCard = require("./../utils").printReceiptCard;
+const utils = require("./../utils");
+
 let order;
 
 module.exports = [
-    function (session) {
-        session.conversationData.pizzas = [];
-        session.conversationData.drinks = [];
-        session.conversationData.quantitiesPizzas = [];
-        session.conversationData.quantitiesDrinks = [];
+    function (session) {        
         session.beginDialog("pizzas");
     },
 
@@ -48,7 +44,7 @@ module.exports = [
             drinks.push(d);
         });
 
-        order = new model.Order(null, null, "PENDIENTE", new Date(Date.now()).toLocaleDateString(), null, pizzas, drinks);
+        order = new model.Order(null, null, "PENDIENTE", utils.getCurrentDateTime(), null, pizzas, drinks);
         pizzas.forEach(p => {
             console.log(p);
             items.push({
@@ -71,16 +67,16 @@ module.exports = [
         receiptCard.title("Pedido")
             .items(items)
             .buttons([
-                builder.CardAction.postBack(session, "pagar", "Pagar"),
+                builder.CardAction.postBack(session, "confirmar", "Confirmar"),
                 builder.CardAction.postBack(session, "cancelar", "Cancelar")
             ]);
         let msg = new builder.Message(session).addAttachment(receiptCard.toAttachment());
         builder.Prompts.text(session, msg);
     },
     function (session, results, next) {
-        print(results.response);
+        utils.print(results.response);
         switch (results.response) {
-            case "pagar":
+            case "confirmar":
                 session.beginDialog("dataClient");
                 break;
             case "cancelar":
@@ -92,12 +88,13 @@ module.exports = [
     },
     function (session, results) {
         session.sendTyping();
+        order.payment = results.payment.toUpperCase();
         order.client = new model.Client(results.id, results.name, results.phone, results.cellphone, results.address, results.city);
-        db.insertOrder(order).then(r => {
-            if (r) {
+        db.insertOrder(order).then(response => {
+            if (response) {
                 session.send("Tu pedido fue registrado en el sistema, dentro de los próximos 30 o 40 minutos estarás disfrutando de tu deliciosa comida.");
                 session.send("Aquí te dejo tu recibo");
-                session.send(printReceiptCard(session, r));
+                session.send(utils.printReceiptCard(session, response));
             } else {
                 session.send("Lamentamos las moletias pero, sucedió un error al registrar tu pedido. Nuestros ingenieros están trabajando para solucionar este problema.");
                 session.send("Por favor comunícate por medio de otro canal para realizar tu pedido.");

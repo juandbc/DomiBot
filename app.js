@@ -94,7 +94,13 @@ bot.dialog("/", [
     function (session) {
         session.preferredLocale("es", (err) => {
             if (err) console.error("error en el locale", err);
-        });        
+        });
+        // Variables de storage temporales durante la conversación
+        session.conversationData.pizzas = [];
+        session.conversationData.drinks = [];
+        session.conversationData.quantitiesPizzas = [];
+        session.conversationData.quantitiesDrinks = [];
+
         builder.Prompts.choice(session, "¿En que puedo ayudarte?", "Realizar un pedido|Consultar mi pedido", {
             listStyle: builder.ListStyle.button,
             recognizeNumbers: true,

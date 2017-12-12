@@ -141,7 +141,6 @@ module.exports = [
 
         let msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel).attachments(pizzasHeroCards);
         builder.Prompts.text(session, msg);
-        //session.endConversation("Oops! tuve problema en mi sistema, los técnicos lo resolverán pronto. Por favor, vuelve a intentar más tarde.");       
     },
     function (session, results) {
         console.log("RESPUESTA DEL USUARIO = " + results.response);

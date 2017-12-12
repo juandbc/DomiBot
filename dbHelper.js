@@ -1,12 +1,16 @@
 "use strict";
 const model = require("./model");
+const dotenv = require("dotenv");
 const mysql = require("mysql"); // Conexion a la base de datos
+
+dotenv.config();
+
 const pool = mysql.createPool({
     connectionLimit: 50,
-    host: "localhost",
-    database: "testdb",
-    user: "root",
-    password: "developer"
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
 });
 
 // Obtener el listado de pizzas
@@ -28,6 +32,7 @@ function getPizzas() {
                     let pizza = new model.Pizza(row.ID, row.DESCRIPCION, 1, row.PRECIO);
                     pizzas.push(pizza);
                 });
+                connection.release();
                 resolve(pizzas);
             });
         });
@@ -53,6 +58,7 @@ function getDrinks() {
                     let drink = new model.Drink(row.ID, row.DESCRIPCION, 1, row.PRECIO);
                     drinks.push(drink);
                 });
+                connection.release();
                 resolve(drinks);
             });
         });
@@ -72,23 +78,6 @@ function queryOrder(id) {
                 console.error("ERROR EN LA CONEXION DE MYSQL", err);
                 reject(null);
             }
-            /* Busca y obtener el adicional
-            function queryExtra(id) {
-                let extra = null;
-                connection.query("SELECT * FROM ORDEN_PIZZA OP JOIN ADICIONAL A ON OP.ID_ADICIONAL = A.ID WHERE A.ID = ?", [id], (error, rows) => {
-                    if (error) {
-                        console.error(error);
-                        throw error;
-                    }
-                    console.log("ADICIONAL");
-                    //console.log(rows);
-                    if (rows.length >= 1) {
-                        extra = new model.Extra(rows[0].ID, rows[0].DESCRIPCION, rows[0].PRECIO_ADICIONAL);
-                    }
-                    console.log(extra);
-                });
-                return extra;
-            }*/
 
             // Obtener las pizzas
             connection.query("SELECT * FROM ORDEN_PIZZA OP JOIN PIZZA P ON P.ID = OP.ID_PIZZA WHERE OP.ID_ORDEN = ?", [id], (error, rows) => {
@@ -158,57 +147,81 @@ function insertOrder(order) {
                         if (err) {
                             console.log("ERROR EN BEGIN TRANSACT");
                             console.error(err);
-                            throw err;
+                            reject(Error("ERROR EN BEGIN TRANSACT"));
                         }
                         let sqlStament = "INSERT INTO ORDEN VALUES (?,?,?,?,?,?,?,?)";
-                        connection.query(sqlStament, [order.id, order.Client.id, order.status, order.Date, order.payment, order.subtotal, order.tax, order.total], (error, rows) => {
+                        connection.query(sqlStament, [order.id, order.client.id, order.status, order.date, order.payment, order.subtotal,
+                        order.tax, order.total], (error, rows) => {
                             if (error) {
                                 console.log("ERROR EN INSERT ORDEN");
                                 console.error(error);
                                 connection.rollback(() => {
-                                    throw error;
+                                    reject(Error("ERROR EN INSERT ORDEN"));
                                 });
                             }
-                            console.log("NUEVO ID: " + rows.insertId);
-                            order.id = rows.insertId;
-                            console.log(rows);
-                        });
-                        order.Pizzas.forEach(pizza => {
-                            let sqlStament = "INSERT INTO ORDEN_PIZZA VALUES (?,?,?,?,?,?)";
-                            connection.query(sqlStament, [order.id, pizza.id, pizza.price, pizza.quantity], (error, rows) => {
+                            // Confirmar los cambios sino deshacerlos
+                            connection.commit(function (err) {
+                                if (err) {
+                                    console.log("ERROR EN COMMIT");
+                                    console.error(err);
+                                    return connection.rollback(function () {
+                                        reject(Error("ERROR EN COMMIT ORDER"));
+                                    });
+                                }
+                            });
+                            connection.query("SELECT ID FROM ORDEN ORDER BY FECHA DESC LIMIT 1;", (error, results) => {
                                 if (error) {
-                                    console.log("ERROR EN INSERT PIZZAS");
+                                    console.log("ERROR EN GET ORDEN_ID");
                                     console.error(error);
                                     throw error;
                                 }
-                                console.log(rows);
-                            });
-                        });
+                                order.id = results[0].ID;
 
-                        order.Drinks.forEach(drink => {
-                            let sqlStament = "INSERT INTO ORDEN_BEBIDA VALUES (?,?,?,?)";
-                            connection.query(sqlStament, [order.id, drink.id, drink.price, drink.quantity], (error, rows) => {
-                                if (error) {
-                                    console.log("ERROR EN INSERT DRINKS");
-                                    console.error(error);
-                                    throw error;
-                                }
-                                console.log(rows);
-                            });
-                        });
-                        connection.commit(function (err) {
-                            if (err) {
-                                console.log("ERROR EN COMMIT");
-                                console.error(err);
-                                return connection.rollback(function () {
-                                    throw err;
+                                // Insertar las pizzas
+                                order.pizzas.forEach(pizza => {
+                                    let sqlStament = "INSERT INTO ORDEN_PIZZA VALUES (?,?,?,?)";
+                                    connection.query(sqlStament, [order.id, pizza.id, pizza.price, pizza.quantity], (error, result) => {
+                                        if (error) {
+                                            console.log("ERROR EN INSERT PIZZAS");
+                                            console.error(error);
+                                            throw error;
+                                        }
+                                        console.log(result);
+                                    });
                                 });
-                            }
-                            console.log("ORDER SUCCESS!");
-                            resolve(order);
+
+                                // Insertar las bebidas
+                                order.drinks.forEach(drink => {
+                                    let sqlStament = "INSERT INTO ORDEN_BEBIDA VALUES (?,?,?,?)";
+                                    connection.query(sqlStament, [order.id, drink.id, drink.price, drink.quantity], (error, result) => {
+                                        if (error) {
+                                            console.log("ERROR EN INSERT DRINKS");
+                                            console.error(error);
+                                            throw error;
+                                        }
+                                        console.log(result);
+                                    });
+                                });
+
+                                // Confirmar los cambios sino deshacerlos
+                                connection.commit(function (err) {
+                                    if (err) {
+                                        console.log("ERROR EN COMMIT");
+                                        console.error(err);
+                                        return connection.rollback(function () {
+                                            reject(Error("ERROR EN COMMIT ORDER"));
+                                        });
+                                    }
+                                    connection.release();
+                                    console.log("ORDER SUCCESS!");
+                                    resolve(order);
+                                });
+                            });
                         });
                     });
                 });
+            } else {
+                reject(false);
             }
         }).catch(onRejected => {
             console.error(onRejected);
@@ -224,21 +237,20 @@ function insertClient(client) {
         pool.getConnection(function (err, connection) {
             if (err) {
                 console.error("ERROR EN LA CONEXION DE MYSQL", err);
-                reject(false);
+                reject(Error("ERROR EN LA CONEXION DE MYSQL"));
             }
 
             connection.query(sqlQueryStament, (error, rows) => {
                 if (error) {
-                    console.log("ERROR EN QUERY CLIENTE");
                     console.error(error);
-                    throw error;
+                    reject(Error("ERROR EN QUERY CLIENTE"));
                 }
                 if (rows.length === 0) {
                     connection.query(sqlInsertStament, [client.id, client.fullName, client.phone, client.cellphone, client.addres, client.city], (error, rows) => {
                         if (error) {
-                            console.log("ERROR EN INSERT CLIENTE");                            
+                            console.log("ERROR EN INSERT CLIENTE");
                             console.error(error);
-                            throw error;
+                            reject(Error("ERROR EN INSERT CLIENTE"));
                         }
                         console.log(rows);
                         connection.commit(function (err) {
@@ -246,16 +258,15 @@ function insertClient(client) {
                                 console.log("ERROR EN COMMIT");
                                 console.error(err);
                                 return connection.rollback(function () {
-                                    throw err;
+                                    reject(Error("ERROR EN COMMIT CLIENTE"));
                                 });
                             }
                             console.log("CLIENT SUCCESS!");
+                            connection.release();
                             resolve(true);
                         });
                     });
-                } else {
-                    
-                }
+                }                
             });
         });
     });

@@ -4,7 +4,9 @@
  */
 const builder = require("botbuilder");
 
-// Crear y retorna un recibo del pedido 
+/**
+ * Crear y retorna un recibo del pedido 
+ */ 
 function printReceiptCard(session, order) {
     // Array con los items del pedido
     let items = [];
@@ -64,9 +66,28 @@ function printReceiptCard(session, order) {
     return new builder.Message(session).addAttachment(receiptCard.toAttachment());
 }
 
+/**
+ * Imprime en consola
+ */
 function print(t) {
     console.log("RESPUESTA=" + t);
 }
 
+/**
+ * Obtiene la fecha y tiempo actual
+ */
+function getCurrentDateTime() {
+    return new Date(Date.now()).toLocaleDateString() + " " + new Date(Date.now()).toLocaleTimeString();
+}
+
+/**
+ *  Concatena los nombres con el tamaño del string de las entities
+ */
+function concatEntityText(description, size) {
+    return description.entity.toLowerCase() + size.entity.toLowerCase();
+}
+
 module.exports.printReceiptCard = printReceiptCard;
 module.exports.print = print;
+module.exports.getCurrentDateTime = getCurrentDateTime;
+module.exports.concatEntityText = concatEntityText;
