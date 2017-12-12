@@ -7,19 +7,29 @@ const builder = require("botbuilder");
 const utils = require("./../utils");
 
 module.exports = [
-    function (session, args) {
-        let items = [];
-        let total = 0;
-
+    function (session, args, next) {
         let quantityEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "builtin.number");
         let sizeEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "tamañoPizza");
         let pizzaEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "pizza");
 
-        pizzaEntities.forEach((entity, index) => {
+        session.conversationData.pizzaEntities = pizzaEntities;
+        session.conversationData.quantityEntities = quantityEntities;
+        if (sizeEntities.length === 0) {
+            builder.Prompts.text(session, "¿Esta bien, y en que tamaño?");
+        } else {
+            session.conversationData.sizeEntities = sizeEntities;
+            next();
+        }
+    },
+    function (session) {
+        let items = [];
+        let total = 0;
+
+        session.conversationData.pizzaEntities.forEach((entity, index) => {
             let p = global.globalPizzas.find(p => {
-                return p.description.toLowerCase().includes(utils.concatEntityText(entity, sizeEntities[index]));
+                return p.description.toLowerCase().includes(utils.concatEntityText(entity, session.conversationData.sizeEntities[index]));
             });
-            p.quantity = quantityEntities[index];
+            p.quantity = utils.textToNumber(session.conversationData.quantityEntities[index].entity);
             console.log(p);
             session.conversationData.pizzas.push(p);
         });
@@ -44,7 +54,7 @@ module.exports = [
     },
     function (session, results) {
         if (results.response) {
-            session.send("Muy bien, ¿Qué más deseas ordenar?");
+            session.send("Muy bien, ¿Deseas ordenar algo más?");
         } else {
             session.send("Oh! lo siento. Por favor vuelve a intentar, y si aún no puedo entenderte, usa la forma guiada.");
         }

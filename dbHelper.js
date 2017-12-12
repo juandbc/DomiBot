@@ -136,7 +136,7 @@ function queryOrder(id) {
 // Guarda una pedido en el sistema
 function insertOrder(order) {
     return new Promise((resolve, reject) => {
-        insertClient(order.Client).then(response => {
+        insertClient(order.client).then(response => {
             if (response) {
                 pool.getConnection((err, connection) => {
                     if (err) {
@@ -246,7 +246,8 @@ function insertClient(client) {
                     reject(Error("ERROR EN QUERY CLIENTE"));
                 }
                 if (rows.length === 0) {
-                    connection.query(sqlInsertStament, [client.id, client.fullName, client.phone, client.cellphone, client.addres, client.city], (error, rows) => {
+                    console.log(client);
+                    connection.query(sqlInsertStament, [client.id, client.fullName, client.phone, client.cellphone, client.address, client.city], (error, rows) => {
                         if (error) {
                             console.log("ERROR EN INSERT CLIENTE");
                             console.error(error);

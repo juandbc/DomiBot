@@ -216,16 +216,21 @@ bot.dialog("dataClient", require("./dialogs/dataClientDialog")).triggerAction({
         session.beginDialog(args.action, args);
     }
 });
-/*
-bot.dialog("", require("./dialogs")).triggerAction({
-    matches: "cambiarBebida",
+
+bot.dialog("changeSize", [
+    function (session, args) {
+        session.conversationData.sizeEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "tamañoPizza");
+        session.endDialog();
+    }
+]).triggerAction({
+    matches: "cambiarTamañoPizza",
     onSelectAction: function (session, args) {
         session.beginDialog(args.action, args);
     }
 });
-
+/*
 bot.dialog("", require("./dialogs")).triggerAction({
-    matches: "cambiarTamañoPizza",
+    matches: "cambiarBebida",
     onSelectAction: function (session, args) {
         session.beginDialog(args.action, args);
     }

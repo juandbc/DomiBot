@@ -4,6 +4,7 @@
   "description": "Bot para realizar pedidos a domicilios de comida",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

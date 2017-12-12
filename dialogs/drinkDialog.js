@@ -27,8 +27,8 @@ module.exports = [
                 builder.CardImage.create(session, "https://www.exito.com/images/products/454/0000684434963454/0000684435839881_lrg_a.jpg")
             ])
             .buttons([
-                builder.CardAction.postBack(session, drinks[2].id, "1.5L"),
-                builder.CardAction.postBack(session, drinks[3].id, "2.5L")
+                builder.CardAction.postBack(session, drinks[3].id, "1.5L"),
+                builder.CardAction.postBack(session, drinks[2].id, "2.5L")
             ]);
 
         let colombianaHeroCard = new builder.HeroCard(session)

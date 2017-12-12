@@ -84,10 +84,39 @@ function getCurrentDateTime() {
  *  Concatena los nombres con el tamaño del string de las entities
  */
 function concatEntityText(description, size) {
-    return description.entity.toLowerCase() + size.entity.toLowerCase();
+    return description.entity.toLowerCase() + " " + size.entity.toLowerCase();
+}
+
+/**
+ * Convierte números a texto
+ */
+function textToNumber(text) {
+    switch(text) {
+        case "uno":
+        return 1;
+        case "dos":
+        return 2;
+        case "tres":
+        return 3;
+        case "cuatro":
+        return 4;
+        case "cinco":
+        return 5;
+        case "seis":
+        return 6;
+        case "siete":
+        return 7;
+        case "ocho":
+        return 8;
+        case "nueve":
+        return 9;
+        case "diez":
+        return 10;
+    }
 }
 
 module.exports.printReceiptCard = printReceiptCard;
 module.exports.print = print;
 module.exports.getCurrentDateTime = getCurrentDateTime;
 module.exports.concatEntityText = concatEntityText;
+module.exports.textToNumber = textToNumber;
