@@ -14,8 +14,8 @@ const dotenv = require("dotenv");
 
 // Mensajes de saludos
 const goodMorning = "Buenos días";
-const goodAfternoon = "Buenos tardes";
-const goodEvening = "Buenos noches";
+const goodAfternoon = "Buenas tardes";
+const goodEvening = "Buenas noches";
 const goodBye = "Adiós";
 
 // Variables globales de la lista de pizzas y bebidas
@@ -58,7 +58,7 @@ const endpointModel = `https://westus.api.cognitive.microsoft.com/luis/v2.0/apps
 bot.recognizer(new builder.LuisRecognizer(endpointModel));
 
 bot.on("conversationUpdate", function (message) {
-    if (message.membersAdded && message.membersAdded.length > 0) {
+    if (message.membersAdded && message.membersAdded[0].name === "User") {
         // Say hello
         //let isGroup = message.address.conversation.isGroup;        
         let reply = new builder.Message().address(message.address).text(greet());

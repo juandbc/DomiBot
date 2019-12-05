@@ -9,14 +9,14 @@ const utils = require("./../utils");
 module.exports = [
     function (session, args, next) {
         if (args && args.reprompt) {
-            builder.Prompts.text(session, "¿Qué drink deseas adicionar?");
+            builder.Prompts.text(session, "¿Qué bebida deseas adicionar?");
         } else {
             next();
         }
     },
     function (session, args) {
         let quantityEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "builtin.number");
-        let sizeEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "tamañoPizza");
+        let sizeEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "sizeDrink");
         let pizzaEntities = builder.EntityRecognizer.findAllEntities(args.intent.entities, "drink");
 
         pizzaEntities.forEach((entity, index) => {

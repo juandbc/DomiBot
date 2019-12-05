@@ -89,10 +89,11 @@ class Order {
 }
 
 class Pizza {
-    constructor(id, description, quantity, price) {
+    constructor(id, description, quantity, size, price) {
         this._id = id;
         this._description = description;
         this._quantity = quantity;
+        this._size = size;
         this._price = price;
         this.calculatePrice();
     }
@@ -105,6 +106,9 @@ class Pizza {
 
     set quantity(quantity) { this._quantity = quantity; this.calculatePrice(); }
     get quantity() { return this._quantity; }
+
+    set size(size) {this._size = size;}
+    get size() {return this._size; }
 
     set price(price) { this._price = price; }
     get price() { return this._price; }
@@ -115,10 +119,11 @@ class Pizza {
 }
 
 class Drink {
-    constructor(id, description, quantity, price) {
+    constructor(id, description, quantity, volumen, price) {
         this._id = id;
         this._description = description;
         this._quantity = quantity;
+        this._volumen = volumen;
         this._price = price;
         this.calculatePrice();
     }
@@ -131,6 +136,9 @@ class Drink {
 
     set quantity(quantity) { this._quantity = quantity; this.calculatePrice(); }
     get quantity() { return this._quantity; }
+
+    set volumen(volumen) { this._volumen = volumen; }
+    get volumen() { return this._volumen; }
 
     set price(price) { this._price = price; }
     get price() { return this._price; }

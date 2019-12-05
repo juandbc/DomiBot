@@ -13,7 +13,7 @@ module.exports = [
     function (session) {        
         session.beginDialog("pizzas");
     },
-
+    // TODO : ordenar cascada, agregar dialog de bebidas
     function (session) {
         builder.Prompts.confirm(session, "¿Deseas incluir alguna bebida en el pedido?", {
             listStyle: builder.ListStyle.button,
@@ -33,33 +33,44 @@ module.exports = [
         let pizzas = [];
         let drinks = [];
         let items = [];
+        let total = 0;
 
         session.conversationData.pizzas.forEach((e, i) => {
-            let p = new model.Pizza(e._id, e._description, session.conversationData.quantitiesPizzas[i], e._price);
+            let p = new model.Pizza(e._id, e._description, session.conversationData.quantitiesPizzas[i], e._size, e._price);
             pizzas.push(p);
         });
 
         session.conversationData.drinks.forEach((e, i) => {
-            let d = new model.Pizza(e._id, e._description, session.conversationData.quantitiesDrinks[i], e._price);
+            let d = new model.Drink(e._id, e._description, session.conversationData.quantitiesDrinks[i], e._volumen, e._price);
             drinks.push(d);
         });
 
         order = new model.Order(null, null, "PENDIENTE", utils.getCurrentDateTime(), null, pizzas, drinks);
         pizzas.forEach(p => {
             console.log(p);
+            total += p.price;
+
             items.push({
-                title: p.description,
+                title: p.description + "-" + p.size,
                 subtitle: "Cantidad: " + p.quantity,
                 price: "$" + p.price
             });
         });
+
         drinks.forEach(d => {
             console.log(d);
+            total += d.price;
+
             items.push({
-                title: d.description,
+                title: d.description + "-" + d.volumen,
                 subtitle: "Cantidad: " + d.quantity,
                 price: "$" + d.price
             });
+        });
+
+        items.push({
+            title: "Total",
+            price: `$${total}`
         });
 
         session.send("Muy bien, aquí está el recibo de tu pedido. Por favor verifica que todo esta en orden.");

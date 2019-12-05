@@ -29,5 +29,8 @@
     "dotenv": "^4.0.0",
     "mysql": "^2.15.0",
     "restify": "^6.3.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }
